@@ -1,0 +1,64 @@
+﻿# Node
+node_modules/
+package-lock.json
+
+# Build outputs
+/frontend/dist/
+/backend/dist/
+/backend/build/
+
+# Environment files
+.env.local
+.env.*.local
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+/backend/logs/
+*.log
+
+# Operating System
+.DS_Store
+
+# Testing
+/backend/coverage/
+/backend/.nyc_output/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+# Excluir todo en .vscode excepto lo especificado
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Temporary files
+.temp/
+.tmp/
+/backend/pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

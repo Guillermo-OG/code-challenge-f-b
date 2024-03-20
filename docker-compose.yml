@@ -1,0 +1,28 @@
+﻿version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_DB_URL=${MONGO_DB_URL}
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
