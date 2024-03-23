@@ -3,19 +3,23 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { FileUploadService } from './file-upload.service'; // Adjust import path as needed
 
 @Controller('file-upload')
 export class FileUploadController {
-  @Post()
+  constructor(private fileUploadService: FileUploadService) {}
+
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    // Here, you can add logic to handle the file or calculate metrics
-    return {
-      message: 'File uploaded successfully',
-      filename: file.originalname,
-    };
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+    await this.fileUploadService.processFile(file);
+    return { message: 'File uploaded and processed successfully' };
   }
 }
