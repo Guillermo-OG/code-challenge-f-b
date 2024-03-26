@@ -20,4 +20,4 @@ RUN npm run build
 RUN npm install -g http-server
 
 # Serve the app
-CMD ["http-server", "dist"]
+CMD ["http-server", "dist", "-P", "http://localhost:8080?"]

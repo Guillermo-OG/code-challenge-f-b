@@ -4,6 +4,8 @@ services:
     build: ./frontend
     ports:
       - "8080:8080"
+    environment:
+      VUE_APP_BACKEND_URL: "http://127.0.0.1:3000"
 
   backend:
     build: ./backend
@@ -13,6 +15,8 @@ services:
       - MONGO_DB_URL=${MONGO_DB_URL}
     depends_on:
       - mongo
+    env_file:
+      - .env
 
   mongo:
     image: mongo:latest
@@ -23,6 +27,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    env_file:
+      - .env
 
 volumes:
   mongo-data:

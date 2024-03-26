@@ -19,7 +19,13 @@ export class FileUploadController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-    await this.fileUploadService.processFile(file);
-    return { message: 'File uploaded and processed successfully' };
+    const { validRows, invalidRows, metrics } =
+      await this.fileUploadService.processFile(file);
+    return {
+      message: 'File uploaded and processed successfully',
+      validRows,
+      invalidRows,
+      metrics,
+    };
   }
 }
