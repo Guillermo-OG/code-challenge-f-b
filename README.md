@@ -4,9 +4,9 @@ Este projeto é uma aplicação web full-stack desenvolvida para permitir aos us
 
 ## Tecnologias Utilizadas
 
-- **Front-end:** Vue.js
+- **Front-end:** Vue.js 3
 - **Back-end:** NestJS
-- **Visualização de Dados:** Chart.js / D3.js
+- **Visualização de Dados:** Chart.js
 - **Banco de Dados:** MongoDB (opcional, não especificado)
 - **Contêineres:** Docker
 

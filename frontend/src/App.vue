@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
     <router-view />
   </div>
 </template>
@@ -14,6 +13,10 @@ export default defineComponent({
 </script>
 
 <style>
+body,
+html {
+  background-color: #f3f4f6;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -21,5 +24,6 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  background-color: #f3f4f6; /* Neutral 100 */
 }
 </style>

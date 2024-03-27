@@ -1,27 +1,42 @@
 ﻿<template>
-  <div>
+  <div class="dashboard-container">
     <h1>Business Metrics Dashboard</h1>
     <div>
-      <button @click="goToUpload">Upload Another File</button>
+      <button class="button-base" @click="goToUpload">
+        Upload Another File
+      </button>
     </div>
 
-    <div v-if="loaded">
-      <line-chart :chart-data="mrrChartData" :options="lineChartOptions" />
-      <line-chart
-        :chart-data="churnRateChartData"
-        :options="lineChartOptions"
-      />
-      <bar-chart
-        :chart-data="subscriptionsVsChurnChartData"
-        :options="barChartOptions"
-      />
-      <line-chart :chart-data="arpuChartData" :options="lineChartOptions" />
+    <div v-if="loaded" class="charts-container">
+      <div class="chart-wrap">
+        <line-chart :chart-data="mrrChartData" :options="lineChartOptions" />
+      </div>
+      <div class="chart-wrap">
+        <line-chart
+          :chart-data="churnRateChartData"
+          :options="lineChartOptions"
+        />
+      </div>
+      <div class="chart-wrap">
+        <bar-chart
+          :chart-data="subscriptionsVsChurnChartData"
+          :options="barChartOptions"
+        />
+      </div>
+      <div class="chart-wrap">
+        <line-chart :chart-data="arpuChartData" :options="lineChartOptions" />
+      </div>
     </div>
     <div v-else>Loading...</div>
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, onMounted, ref } from "vue"
+import { Chart, registerables, ChartData } from "chart.js"
+import { LineChart, BarChart } from "vue-chart-3"
+import { useRouter } from "vue-router"
+
 interface MetricData {
   month: string
   year: number
@@ -32,11 +47,9 @@ interface MetricData {
   ARPU: number
 }
 
-import { defineComponent, onMounted, ref } from "vue"
+// Asumiendo la existencia de una fuente de datos mock
 import { metricsData as metricsDataMock } from "../mocks/metricsData"
-import { Chart, registerables, ChartData } from "chart.js"
-import { LineChart, BarChart } from "vue-chart-3"
-import { useRouter } from "vue-router"
+
 Chart.register(...registerables)
 
 export default defineComponent({
@@ -47,7 +60,6 @@ export default defineComponent({
   setup() {
     const loaded = ref(false)
     const router = useRouter()
-
     const mrrChartData = ref<ChartData<"line", number[], string>>({
       labels: [],
       datasets: [],
@@ -70,79 +82,69 @@ export default defineComponent({
       )
       const metricsData =
         sessionMetricsData.length > 0 ? sessionMetricsData : metricsDataMock
-
       const labels = metricsData.map((data) => `${data.month}/${data.year}`)
-
-      const mrrData = metricsData.map((data) => data.MRR)
-      const churnRateData = metricsData.map((data) => data.ChurnRate)
-      const mrrNewSubscriptionsData = metricsData.map(
-        (data) => data.MRRNewSubscriptions
-      )
-      const mrrChurnData = metricsData.map((data) => data.MRRChurn)
-      const arpuData = metricsData.map((data) => data.ARPU)
 
       mrrChartData.value = {
         labels,
         datasets: [
-          { label: "MRR", data: mrrData, borderColor: "blue", fill: false },
+          {
+            label: "MRR",
+            data: metricsData.map((data) => data.MRR),
+            borderColor: "blue",
+            fill: false,
+          },
         ],
       }
-
       churnRateChartData.value = {
         labels,
         datasets: [
           {
             label: "Churn Rate",
-            data: churnRateData,
+            data: metricsData.map((data) => data.ChurnRate),
             borderColor: "red",
             fill: false,
           },
         ],
       }
-
       subscriptionsVsChurnChartData.value = {
         labels,
         datasets: [
           {
             label: "New Subscriptions",
-            data: mrrNewSubscriptionsData,
+            data: metricsData.map((data) => data.MRRNewSubscriptions),
             backgroundColor: "green",
           },
-          { label: "Churn", data: mrrChurnData, backgroundColor: "red" },
+          {
+            label: "Churn",
+            data: metricsData.map((data) => data.MRRChurn),
+            backgroundColor: "red",
+          },
         ],
       }
-
       arpuChartData.value = {
         labels,
         datasets: [
-          { label: "ARPU", data: arpuData, borderColor: "purple", fill: true },
+          {
+            label: "ARPU",
+            data: metricsData.map((data) => data.ARPU),
+            borderColor: "purple",
+            fill: true,
+          },
         ],
       }
 
       loaded.value = true
     }
 
-    onMounted(() => {
-      prepareChartData()
-    })
+    onMounted(prepareChartData)
 
-    const lineChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    }
-
+    const lineChartOptions = { responsive: true, maintainAspectRatio: false }
     const barChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
-        x: {
-          stacked: true,
-        },
-        y: {
-          stacked: true,
-        },
-      },
+      scales: { x: { stacked: true }, y: { stacked: true } },
     }
+
     function goToUpload() {
       router.push("/")
     }
@@ -162,13 +164,55 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div {
+.dashboard-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.chart-container {
-  width: 80%;
-  height: 500px;
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.chart-wrap {
+  animation: slideUp 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.button-base {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #fff;
+  background-color: #4f46e5; /* Indigo 800 */
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .charts-container {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+
+  .chart-wrap {
+    min-height: 400px; /* Adjust based on your preference */
+  }
 }
 </style>
